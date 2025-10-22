@@ -268,5 +268,5 @@ echo "Time:`expr $stop_time - $start_time`"
 exec 6>&-
 echo "over !"
 
-rm -r $dir/tmp
+#rm -r $dir/tmp
 rm *gff.bed*
