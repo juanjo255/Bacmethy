@@ -94,53 +94,12 @@ log_info "Multi-Fasta: Splitting by contig before Running Bacmethy"
 seqkit_out_dir=$wd"/fasta_split"
 seqkit split --quiet --by-id --out-dir "$seqkit_out_dir" $FASTA
 
-wrapper() {
-
-  args=("$@")
-  for contig in $(ls "$seqkit_out_dir/" | grep "part_"); 
-  do
-    log_info "Setting New Options For Contig: $contig"
-    contig_id=$(seqkit fx2tab -n -i "$seqkit_out_dir/$contig")
-
-    new_options=()
-    options=$(getopt -o :hm:s:g:p:t:T:d:b:a:r:i:n:c:G -- "${args[@]}")
-    eval set -- "$options"
-
-    while true; do
-        case "$1" in
-            -p)
-                # $2 contains the argument for -p
-                new_options+=("-p" "${2}_${contig_id}")
-                shift 2
-                ;;
-            -g)
-                new_options+=("-g" "$contig")
-                shift 2 
-                ;;
-            --)
-                shift
-                break
-                ;;
-            *)
-                # For all other options, preserve them
-                new_options+=("$1")
-                shift
-                ;;
-        esac
-    done
-    log_info "Options Edited for Each Contig: Check cmd file"
-    echo "${new_options[@]}" > $wd"/"$contig_id".cmd"
-
-  done
-}
-
-
-
-# wrapper "$@"
-
 
 
 run_bacmethy() {
+
+    ## This run bacmethy on each contig splitted before.
+
   source $dir"/log_message_function.sh"
 
 
